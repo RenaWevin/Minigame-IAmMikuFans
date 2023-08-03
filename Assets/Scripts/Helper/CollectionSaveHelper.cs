@@ -15,6 +15,32 @@ public static class CollectionSaveHelper {
     private const string CollectionPlayerPrefsKey_NotMiku = "Collection_N{0:00}";
 
     /// <summary>
+    /// 取得目前已解鎖的收藏列表ID
+    /// </summary>
+    /// <returns></returns>
+    public static List<int> GetUnlockedCollections() {
+        List<int> output = new List<int>();
+
+        string key;
+        int spriteCount_Miku = ConfigComponent.Instance.spriteCount_Miku;
+        for (int subId = 1; subId <= spriteCount_Miku; subId++) {
+            key = string.Format(CollectionPlayerPrefsKey_Miku, subId);
+            if (PlayerPrefs.GetInt(key: key, defaultValue: 0) == 1) {
+                output.Add(39000 + subId);
+            }
+        }
+        int spriteCount_NotMiku = ConfigComponent.Instance.spriteCount_NotMiku;
+        for (int subId = 1; subId <= spriteCount_NotMiku; subId++) {
+            key = string.Format(CollectionPlayerPrefsKey_NotMiku, subId);
+            if (PlayerPrefs.GetInt(key: key, defaultValue: 0) == 1) {
+                output.Add(subId);
+            }
+        }
+
+        return output;
+    }
+
+    /// <summary>
     /// 新增登記收藏
     /// </summary>
     public static void AddCollections(params int[] ids) {
@@ -36,9 +62,7 @@ public static class CollectionSaveHelper {
     /// <summary>
     /// 清除所有收藏
     /// </summary>
-    public static async Task ClearCollection() {
-        await ConfigComponent.Instance.isInited.Task;
-
+    public static void ClearCollection() {
         string key;
         int spriteCount_Miku = ConfigComponent.Instance.spriteCount_Miku;
         for (int i = 1; i <= spriteCount_Miku; i++) {
